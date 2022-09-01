@@ -1,41 +1,37 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 
-class ScanController extends GetxController implements FullLifeCycleMixin {
-  @override
-  void didChangeAccessibilityFeatures() {}
+class ScanController extends SuperController {
+  final FlutterBluePlus flutterBluePlus = FlutterBluePlus.instance;
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {}
-
-  @override
-  void didChangeLocales(List<Locale>? locales) {}
-
-  @override
-  void didChangeMetrics() {}
-
-  @override
-  void didChangePlatformBrightness() {}
-
-  @override
-  void didChangeTextScaleFactor() {}
-
-  @override
-  void didHaveMemoryPressure() {}
-
-  @override
-  Future<bool> didPopRoute() {
-    throw UnimplementedError();
+  void onInit() {
+    super.onInit();
   }
 
-  @override
-  Future<bool> didPushRoute(String route) {
-    throw UnimplementedError();
+  scanDevices() {
+    flutterBluePlus.startScan(
+      timeout: 5.seconds,
+    );
+    var subscriptions = flutterBluePlus.scanResults.listen((results) {
+      for (ScanResult ble in results) {
+        log("${ble.device.name} found rssi: ${ble.device.id}");
+      }
+    });
+    log("Log $subscriptions");
   }
 
-  @override
-  Future<bool> didPushRouteInformation(RouteInformation routeInformation) {
-    throw UnimplementedError();
+  stopScan() => flutterBluePlus.stopScan();
+
+  actionUser(String? type) async {
+    if (type == "connect") {
+      // connect device
+    } else {
+      // disconnect device
+    }
   }
 
   @override
